@@ -1,0 +1,28 @@
+[project]
+protostar-version = "0.7.0"
+lib-path = "lib"
+
+[contracts]
+main = ["src/bit_store.cairo"]
+
+[profile.devnet.deploy]
+gateway_url = "http://127.0.0.1:5050/"
+feeder_gateway_url = "http://127.0.0.1:5050/"
+chain-id = 1536727068981429685321
+
+[profile.devnet.declare]
+gateway_url = "http://127.0.0.1:5050/"
+feeder_gateway_url = "http://127.0.0.1:5050/"
+chain-id = 1536727068981429685321
+
+[profile.testnet.deploy]
+network = "alpha-goerli"
+
+[profile.testnet.declare]
+network = "alpha-goerli"
+
+[profile.mainnet.deploy]
+network = "alpha-mainnet"
+
+[profile.mainnet.declare]
+network = "alpha-mainnet"
