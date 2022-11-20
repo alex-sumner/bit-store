@@ -65,6 +65,14 @@ func two_to_the_n{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_pt
     return(result);
 }
 
+// Multiplying by 2 up to 123 times in a recursive loop is a bit inefficient, and we
+// can't use the expression 2**n as Cairo v0.9 doesn't support that. We can use constant
+// expressions like 2**120, so one possible approach would be to store all 123 possible
+// powers of 2 and have a giant if statement that returns the correct one with no
+// mutliplications required. The compromise approach used here is to store just a
+// selection of the powers of 2 spread  over the range from 2 to 120 and build the
+// result in a series of up to 7 multiplications.
+
 func two_to_the_n_acc{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
    n: felt, accumulator: felt
 ) -> (result: felt) {
