@@ -5,7 +5,7 @@ from starkware.cairo.common.cairo_builtins import BitwiseBuiltin, HashBuiltin
 from starkware.cairo.common.math import unsigned_div_rem
 from starkware.cairo.common.math_cmp import is_le_felt
 
-const BITS_IN_FELT = 124;
+const BITS_IN_FELT = 251;
 
 @storage_var
 func store(index: felt) -> (value: felt) {
@@ -46,7 +46,9 @@ func get_bit{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr, bi
     let (local word_index, local bit_index) = find_bit(key);
     let (local word) = store.read(word_index);
     let (bit_mask) = two_to_the_n(bit_index);
-    let (bit_in_lsb, _) = unsigned_div_rem(word, bit_mask);
+    let (lsb_zeros) = bitwise_not(bit_mask - 1);
+    let (zero_trailing) = bitwise_and(word, lsb_zeros);
+    let bit_in_lsb = zero_trailing / bit_mask;
     let (bit) = bitwise_and(bit_in_lsb, 1);
     return(value=bit);
 }

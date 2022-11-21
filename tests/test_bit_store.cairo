@@ -10,48 +10,68 @@ func test_find_bit{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_p
     let (local keys: felt*) = alloc();
     assert keys[0] = 0;
     assert keys[1] = 1;
-    assert keys[2] = 118;
-    assert keys[3] = 119;
-    assert keys[4] = 122;
-    assert keys[5] = 123;
-    assert keys[6] = 124;
-    assert keys[7] = 125;
-    assert keys[8] = 248;
-    assert keys[9] = 249;
-    assert keys[10] = 250;
-    assert keys[11] = 251;
-    assert keys[12] = 252;
-    print(13, keys);
+    assert keys[2] = 248;
+    assert keys[3] = 249;
+    assert keys[4] = 250;
+    assert keys[5] = 251;
+    assert keys[6] = 252;
+    assert keys[7] = 253;
+    assert keys[8] = 254;
+    let (local expected_vals_0: felt*) = alloc();
+    assert expected_vals_0[0] = 0;
+    assert expected_vals_0[1] = 0;
+    assert expected_vals_0[2] = 0;
+    assert expected_vals_0[3] = 0;
+    assert expected_vals_0[4] = 0;
+    assert expected_vals_0[5] = 0;
+    assert expected_vals_0[6] = 0;
+    assert expected_vals_0[7] = 0;
+    assert expected_vals_0[8] = 0;
+    check(9, keys, expected_vals_0);
     set_bit(0);
-    set_bit(123);
-    set_bit(124);
+    set_bit(249);
     set_bit(250);
     set_bit(251);
-    set_bit(249);
-    %{
-        print('set bits: 0, 123, 124, 249, 250, 251')
-    %}
-    print(13, keys);
+    set_bit(252);
+    set_bit(253);
+    let (local expected_vals_1: felt*) = alloc();
+    assert expected_vals_1[0] = 1;
+    assert expected_vals_1[1] = 0;
+    assert expected_vals_1[2] = 0;
+    assert expected_vals_1[3] = 1;
+    assert expected_vals_1[4] = 1;
+    assert expected_vals_1[5] = 1;
+    assert expected_vals_1[6] = 1;
+    assert expected_vals_1[7] = 1;
+    assert expected_vals_1[8] = 0;
+    check(9, keys, expected_vals_1);
     clear_bit(0);
-    clear_bit(123);
     clear_bit(250);
-    %{
-        print('cleared bits: 0, 123, 250')
-    %}
-    print(13, keys);
+    clear_bit(251);
+    clear_bit(252);
+    let (local expected_vals_2: felt*) = alloc();
+    assert expected_vals_2[0] = 0;
+    assert expected_vals_2[1] = 0;
+    assert expected_vals_2[2] = 0;
+    assert expected_vals_2[3] = 1;
+    assert expected_vals_2[4] = 0;
+    assert expected_vals_2[5] = 0;
+    assert expected_vals_2[6] = 0;
+    assert expected_vals_2[7] = 1;
+    assert expected_vals_2[8] = 0;
+    check(9, keys, expected_vals_2);
     return();
 }
 
-func print{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr, bitwise_ptr: BitwiseBuiltin*}(
-    num_keys: felt, keys:felt*
+func check{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr, bitwise_ptr: BitwiseBuiltin*}(
+    num_keys: felt, keys:felt*, expected_vals:felt*
 ) {
     if (num_keys == 0) {
         return();
     }
     let key = [keys];
-    let (bit) = get_bit(key);
-    %{
-        print(f'{ids.key} -> {ids.bit}')
-    %}
-    return print(num_keys-1, keys+1);
+    let (stored_bit) = get_bit(key);
+    let expected = [expected_vals];
+    assert stored_bit = expected;
+    return check(num_keys-1, keys+1, expected_vals+1);
 }
